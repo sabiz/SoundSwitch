@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">SoundSwitch</string>
+    <string name="tile_label">SoundSwitch :)</string>
+    <string name="tile_label_active">Vibe mode</string>
+    <string name="tile_label_inactive">Normal mode</string>
+</resources>

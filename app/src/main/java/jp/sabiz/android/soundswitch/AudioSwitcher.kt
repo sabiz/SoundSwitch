@@ -3,43 +3,37 @@ package jp.sabiz.android.soundswitch
 
 import android.content.Context
 import android.media.AudioManager
-import android.util.Log
 
 class AudioSwitcher internal constructor(context: Context) {
 
-    private val mAudioManager: AudioManager
-    private val mStorage: DataStorage
+    private val mAudioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private val mStorage: DataStorage = DataStorage(context, STORAGE_NAME)
 
     companion object {
 
-        private val STORAGE_NAME = "AUDIO_SWITCHER_DATA"
+        private const val STORAGE_NAME = "AUDIO_SWITCHER_DATA"
         private val STREAM_TABLE = arrayOf(AudioManager.STREAM_ALARM, AudioManager.STREAM_DTMF,
                                             AudioManager.STREAM_NOTIFICATION, AudioManager.STREAM_SYSTEM,
                                             AudioManager.STREAM_VOICE_CALL,AudioManager.STREAM_MUSIC)
     }
 
-    init {
-        mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        mStorage = DataStorage(context, STORAGE_NAME)
-    }
-
-    fun unmute() {
-        for (stream in STREAM_TABLE) {
-            val volume = mStorage.restore(stream,mAudioManager.getStreamMaxVolume(stream))
-            if (stream == AudioManager.STREAM_VOICE_CALL) {
+    private fun unmute() {
+        STREAM_TABLE.forEach {
+            val volume = mStorage.restore(it,mAudioManager.getStreamMaxVolume(it))
+            if (it == AudioManager.STREAM_VOICE_CALL) {
                 mAudioManager.setStreamVolume(AudioManager.STREAM_RING,volume, AudioManager.FLAG_SHOW_UI)
             }
-            mAudioManager.setStreamVolume(stream,volume, AudioManager.FLAG_SHOW_UI)
+            mAudioManager.setStreamVolume(it,volume, AudioManager.FLAG_SHOW_UI)
         }
     }
 
-    fun mute() {
-        for (stream in STREAM_TABLE) {
-            mStorage.store(stream,mAudioManager.getStreamVolume(stream))
-            mAudioManager.setStreamVolume(stream,0, AudioManager.FLAG_SHOW_UI)
-            if (stream == AudioManager.STREAM_VOICE_CALL) {
+    private fun mute() {
+        STREAM_TABLE.forEach {
+            mStorage.store(it,mAudioManager.getStreamVolume(it))
+            if (it == AudioManager.STREAM_VOICE_CALL) {
                 mAudioManager.setStreamVolume(AudioManager.STREAM_RING,0, AudioManager.FLAG_SHOW_UI)
             }
+            mAudioManager.setStreamVolume(it,0, AudioManager.FLAG_SHOW_UI)
         }
     }
 

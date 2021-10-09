@@ -22,10 +22,6 @@ class SoundSwitchService : TileService() {
         }
     }
 
-    override fun onTileAdded() {
-        super.onTileAdded()
-    }
-
     override fun onTileRemoved() {
         super.onTileRemoved()
         toInactive()
@@ -35,10 +31,6 @@ class SoundSwitchService : TileService() {
         super.onStartListening()
         updateTileResource()
 
-    }
-
-    override fun onStopListening() {
-        super.onStopListening()
     }
 
     private fun toActive() {

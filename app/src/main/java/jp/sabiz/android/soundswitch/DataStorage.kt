@@ -5,11 +5,7 @@ import android.content.SharedPreferences
 
 class DataStorage internal constructor(context: Context,storageName: String){
 
-    private val preference: SharedPreferences
-
-    init {
-        preference = context.getSharedPreferences(storageName,Context.MODE_PRIVATE)
-    }
+    private val preference: SharedPreferences = context.getSharedPreferences(storageName,Context.MODE_PRIVATE)
 
     fun store(key: Int, value: Int) {
         val edit = preference.edit()

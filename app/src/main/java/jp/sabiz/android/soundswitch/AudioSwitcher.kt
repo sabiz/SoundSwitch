@@ -3,6 +3,7 @@ package jp.sabiz.android.soundswitch
 
 import android.content.Context
 import android.media.AudioManager
+import android.util.Log
 
 class AudioSwitcher internal constructor(context: Context) {
 
@@ -22,6 +23,11 @@ class AudioSwitcher internal constructor(context: Context) {
         for (stream in STREAM_TABLE) {
             mStorage.store(stream,mAudioManager.getStreamVolume(stream))
         }
+        mAudioManager.adjustVolume(AudioManager.ADJUST_MUTE, AudioManager.FLAG_SHOW_UI)
+        mAudioManager.ringerMode = AudioManager.RINGER_MODE_VIBRATE
+    }
+
+    fun reVibe() {
         mAudioManager.adjustVolume(AudioManager.ADJUST_MUTE, AudioManager.FLAG_SHOW_UI)
         mAudioManager.ringerMode = AudioManager.RINGER_MODE_VIBRATE
     }

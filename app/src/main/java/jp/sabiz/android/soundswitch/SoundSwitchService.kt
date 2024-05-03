@@ -10,12 +10,14 @@ import android.media.AudioManager
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
+import java.lang.Exception
 
 class SoundSwitchService : TileService() {
 
     private lateinit var mAudioSwitcher: AudioSwitcher
     private val mAudioStateReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            Log.v("BroadCastReceiver", intent.action ?: "no action...")
             if(qsTile.state != Tile.STATE_ACTIVE) {
                 return
             }
@@ -38,11 +40,19 @@ class SoundSwitchService : TileService() {
         }
 
         fun register(context: Context) {
-            context.registerReceiver(this, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
-            context.registerReceiver(this, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+            Log.v("BroadCastReceiver", "register")
+            try {
+                context.registerReceiver(this, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+                context.registerReceiver(this, IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY))
+            } catch (ex: Exception) {
+                unregister(context)
+                register(context)
+            }
+
         }
 
         fun unregister(context: Context) {
+            Log.v("BroadCastReceiver", "unregister")
             try {
                 context.unregisterReceiver(this)
             } catch (ex: java.lang.IllegalArgumentException) {
